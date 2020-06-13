@@ -5,16 +5,30 @@ import numpy as np
 src = cv2.imread('./img/src.png', 0)
 sign = cv2.imread('./img/sign.png', 0)
 
+origin = list()
+
 #元画像から最下位ビット成分を除去
 for col in src:
+    row = list()
     for comp in col:
         if comp%2:
-            comp -= 1
+            row.append(comp -1)
+        else:
+            row.append(comp)
+    origin.append(row)
+
+output = list()
 
 #元画像の最下位ビットに追加画像の画素値を加算
-for col, col1 in zip(src, sign):
-    for comp, comp1 in zip(col, col1):
-        if comp1!=0:
-            comp += 1
-            
-cv2.imwrite('result.png', src)
+for col, originCol in zip(sign, origin):
+    newRow = list()
+    for row, originRow in zip(col, originCol):
+        if row == 0:
+            newRow.append(originRow + 1)
+        else:
+            newRow.append(originRow)
+    output.append(newRow)    
+    
+img = np.array(output)
+
+cv2.imwrite('result.png', img)
